@@ -1,16 +1,24 @@
 import array
 
 class Message:
+    """Message class for sending a message to a bigbox or to decode a message received from a bigbox"""
     def __init__(self, deviceId=None, deviceType=None, fromBytes=None):
+        """Two way to create a new message object:
+        1. Add deviceId and deviceType
+        2. Add a binary message received from bigbox in fromBytes parameters
+        """
         if fromBytes != None:
-            self.fromBytes(fromBytes)
-        else:
+            self._fromBytes(fromBytes)
+        elif deviceId != None and deviceType != None:
             self.deviceId = deviceId
             self.deviceType = deviceType
             self.parameters = []
             self.counter = 0
+        else:
+            raise ValueError("Invalid arguments for Message")
 
-    def fromBytes(self, message):
+    def _fromBytes(self, message):
+        """Decode a binary message received from a bigbox"""
         self.deviceId = message[3]
         self.deviceType = message[4]
         self.counter = message[5]
@@ -24,6 +32,7 @@ class Message:
             self.parameters.append({'id': id, 'value': value})
 
     def _addHeader(self, message):
+        """Add header to binary message for bigbox"""
         header = [0xff, 0xff, 0xff]
 
         message.append(header[0])
@@ -34,7 +43,7 @@ class Message:
         message.append(self.counter)
     
     def _addParameters(self, message):
-    
+        """Add parameters to binary message for bigbox"""
         for parameter in self.parameters:
             value = parameter['value']
             if value < 0:
@@ -47,6 +56,7 @@ class Message:
         message.append(0)
 
     def _addChecksum(self, message):
+        """Calculate and add checksum to binary message for bigbox"""
         # calculate checksum starting in 3rd index
         checksum = 0
         for i in range(3, len(message)):
@@ -57,6 +67,7 @@ class Message:
         message.append(checksum >> 8)
     
     def tobytes(self):
+        """Build and return message in an array of bytes"""
         message = []
         self._addHeader(message)
         self._addParameters(message)

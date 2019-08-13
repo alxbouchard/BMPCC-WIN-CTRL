@@ -26,7 +26,7 @@ def showGimbalStates(states):
 
 def main():
     try:
-        bigbox = Bigbox("192.168.1.78", 60505)
+        bigbox = Bigbox("192.168.1.78", 50508, "TCP")
         bigbox.connect()
         gimbal = Gimbal(bigbox, 101)
         gimbal.setFrequency(100)
