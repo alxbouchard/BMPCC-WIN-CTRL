@@ -1,11 +1,12 @@
 import socket
 import time
-import sys, traceback
-from BMDCameraProtocol.bluetoothdiscoverer import BluetoothDiscoverer
+import asyncio
 
 from LevitezerProtocol.message import Message
 from LevitezerProtocol.bigbox import Bigbox
 from LevitezerProtocol.gimbal import Gimbal
+from BMDCameraProtocol.bmdcamera import BMDCamera
+from menu import Menu
 
 # Gimbal code test -----
 def mainGimbal():
@@ -45,34 +46,13 @@ def showGimbalStates(states):
     print("board_version: {}".format(states.board_version))
     print("firmware_version: {}".format(states.firmware_version))
 
-# BMDCamera code test -----
-def mainCamera():
-    print("Hello World!")
-    bluetooth_discoverer = BluetoothDiscoverer()
-    bluetooth_discoverer.scan_devices(2) # scan for 2 seconds
 
-    if len(bluetooth_discoverer.ble_devices) == 0:
-        print('No device found')
-        return
-    selected_device = select_camera(bluetooth_discoverer.ble_devices)
-    print('Selected device : ', selected_device.name)
-    paired = selected_device.connect(input_pin)
-
-    print('Paired : ', paired)
-    if paired:
-        print('yay!')
-        
-def select_camera(devices):
-    for index, device in enumerate(devices):
-        print(index + 1, '. ', device.name)
-    inputIndex = -1 + int(input('Enter number : '))
-    selectedDevice = devices[inputIndex]
-    return selectedDevice
-
-def input_pin():
-    pin = input('Enter PIN : ')
-    return pin
+async def main_camera():
+    menu = Menu()
+    await menu.main_menu()
 
 # Launch test 
 if __name__ == "__main__":
-    mainCamera()
+    asyncio.run(main_camera())
+
+

@@ -5,7 +5,7 @@ from winrt.windows.devices.bluetooth.advertisement import BluetoothLEAdvertiseme
 from winrt.windows.devices.bluetooth import BluetoothLEDevice
 
 from .bmdcamera import BMDCamera
-
+import asyncio
 
 DEVICE_NAMES = {'bmdcamera': 'Pocket Cinema Camera 4K'}
 
@@ -16,7 +16,7 @@ class BluetoothDiscoverer:
         self.ble_devices = []
         self.callbackPIN = callbackPIN
 
-    def scan_devices(self, seconds):
+    async def scan_devices(self, seconds):
         self.ble_devices = []
 
         watcher = BluetoothLEAdvertisementWatcher()
@@ -24,7 +24,7 @@ class BluetoothDiscoverer:
         watcher.add_received(self._on_advertisement_received)
 
         watcher.start()
-        time.sleep(seconds)
+        await asyncio.sleep(seconds)
         watcher.stop()
 
     def _on_advertisement_received(self, btAdvWatcher, btAdvEvent):
@@ -32,28 +32,26 @@ class BluetoothDiscoverer:
 
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
-        ble_device = loop.run_until_complete(self._ask_device_information(address))
-        
-        name = ble_device.name
+        ble_device = loop.run_until_complete(self._get_device(address))
         
         if not self._isNewAddress(address):
             return
-
         self.deviceAddresses.append(address)
 
-        device = self._create_device(address, name)
+        device = self._create_device(ble_device)
         if device is not None:
             self.ble_devices.append(device)
 
-    async def _ask_device_information(self, address):
+    async def _get_device(self, address):
         device = await BluetoothLEDevice.from_bluetooth_address_async(address)
         return device
 
-    def _create_device(self, address, name):
+    def _create_device(self, ble_device):
+        name = ble_device.name
         device = None
 
         if DEVICE_NAMES['bmdcamera'] in name:
-            device = BMDCamera(address, name)
+            device = BMDCamera(ble_device)
 
         return device
 

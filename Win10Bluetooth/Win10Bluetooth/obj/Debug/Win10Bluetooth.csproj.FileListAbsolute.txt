@@ -1,0 +1,6 @@
+D:\Projects\Pigiste\Zap\ccmt-python\Win10Bluetooth\Win10Bluetooth\bin\Debug\Win10Bluetooth.dll
+D:\Projects\Pigiste\Zap\ccmt-python\Win10Bluetooth\Win10Bluetooth\bin\Debug\Win10Bluetooth.pdb
+D:\Projects\Pigiste\Zap\ccmt-python\Win10Bluetooth\Win10Bluetooth\obj\Debug\Win10Bluetooth.csprojAssemblyReference.cache
+D:\Projects\Pigiste\Zap\ccmt-python\Win10Bluetooth\Win10Bluetooth\obj\Debug\Win10Bluetooth.csproj.CoreCompileInputs.cache
+D:\Projects\Pigiste\Zap\ccmt-python\Win10Bluetooth\Win10Bluetooth\obj\Debug\Win10Bluetooth.dll
+D:\Projects\Pigiste\Zap\ccmt-python\Win10Bluetooth\Win10Bluetooth\obj\Debug\Win10Bluetooth.pdb

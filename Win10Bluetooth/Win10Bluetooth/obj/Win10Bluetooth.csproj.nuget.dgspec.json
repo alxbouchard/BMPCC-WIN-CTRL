@@ -1,0 +1,62 @@
+{
+  "format": 1,
+  "restore": {
+    "D:\\Projects\\Pigiste\\Zap\\ccmt-python\\Win10Bluetooth\\Win10Bluetooth\\Win10Bluetooth.csproj": {}
+  },
+  "projects": {
+    "D:\\Projects\\Pigiste\\Zap\\ccmt-python\\Win10Bluetooth\\Win10Bluetooth\\Win10Bluetooth.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\Projects\\Pigiste\\Zap\\ccmt-python\\Win10Bluetooth\\Win10Bluetooth\\Win10Bluetooth.csproj",
+        "projectName": "Win10Bluetooth",
+        "projectPath": "D:\\Projects\\Pigiste\\Zap\\ccmt-python\\Win10Bluetooth\\Win10Bluetooth\\Win10Bluetooth.csproj",
+        "packagesPath": "C:\\Users\\nevek\\.nuget\\packages\\",
+        "outputPath": "D:\\Projects\\Pigiste\\Zap\\ccmt-python\\Win10Bluetooth\\Win10Bluetooth\\obj\\",
+        "projectStyle": "PackageReference",
+        "skipContentFileWrite": true,
+        "configFilePaths": [
+          "C:\\Users\\nevek\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net472"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net472": {
+            "projectReferences": {}
+          }
+        }
+      },
+      "frameworks": {
+        "net472": {
+          "dependencies": {
+            "Microsoft.Windows.SDK.Contracts": {
+              "target": "Package",
+              "version": "[10.0.18362.2002-preview, )"
+            }
+          },
+          "imports": [
+            "uap10.0.18362"
+          ],
+          "assetTargetFallback": true,
+          "warn": true
+        }
+      },
+      "runtimes": {
+        "win": {
+          "#import": []
+        },
+        "win-x64": {
+          "#import": []
+        },
+        "win-x86": {
+          "#import": []
+        }
+      }
+    }
+  }
+}
