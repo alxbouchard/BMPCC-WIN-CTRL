@@ -14,6 +14,10 @@ class BMDCamera:
         self.bluetooth_adapter = BluetoothAdapter(ble_device)
         self.name = ble_device.Name
 
+    @property
+    def paired(self):
+        return self.bluetooth_adapter.IsPaired()
+
     async def connect(self, callback_input_pin):
         if not self.bluetooth_adapter.IsPaired().Result:
             task = self.bluetooth_adapter.ConnectWithPin()
@@ -128,6 +132,7 @@ class BMDCamera:
 
     def dispose(self):
         self.bluetooth_adapter.Dispose()
+        self.bluetooth_adapter = None
 
     async def unpair(self):
         return self.bluetooth_adapter.Unpair().Result

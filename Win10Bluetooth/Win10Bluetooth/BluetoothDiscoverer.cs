@@ -10,21 +10,27 @@ namespace Win10Bluetooth
     {
         List<ulong> addresses;
         List<BluetoothLEDevice> bleDevices;
+        BluetoothLEAdvertisementWatcher watcher;
+
         public BluetoothDiscoverer()
         {
             addresses = new List<ulong>();
             bleDevices = new List<BluetoothLEDevice>();
+
+            watcher = new BluetoothLEAdvertisementWatcher();
+            watcher.ScanningMode = BluetoothLEScanningMode.Active;
+            watcher.Received += OnAdvertisementReceived;
         }
 
         public async Task<List<BluetoothLEDevice>> ScanDevices(int ms)
         {
             bleDevices.Clear();
-            BluetoothLEAdvertisementWatcher watcher = new BluetoothLEAdvertisementWatcher();
-            watcher.ScanningMode = BluetoothLEScanningMode.Active;
-            watcher.Received += OnAdvertisementReceived;
+            addresses.Clear();
+            
             watcher.Start();
             await Task.Delay(ms);
             watcher.Stop();
+
             return bleDevices;
         }
 

@@ -21,12 +21,25 @@ namespace Win10Bluetooth
         private Dictionary<string, GattCharacteristic> characteristics;
         private DevicePairingRequestedEventArgs devicePairingCodePin = null;
         private string pin;
+        private DeviceWatcher watcher;
 
         public BluetoothAdapter(BluetoothLEDevice bleDevice)
         {
             bluetoothLEDevice = bleDevice;
             characteristics = new Dictionary<string, GattCharacteristic>();
             pin = null;
+
+            // Characteristics Watcher
+            //BluetoothLEDevice leDevice = await BluetoothLEDevice.FromIdAsync(bluetoothLEDevice.DeviceId);
+            //bluetoothLEDevice = leDevice;
+
+            string selector = "(System.DeviceInterface.Bluetooth.DeviceAddress:=\"" +
+                bleDevice.BluetoothAddress.ToString("X") + "\")";
+
+
+            watcher = DeviceInformation.CreateWatcher(selector);
+            watcher.Added += Watcher_Added;
+            watcher.Removed += Watcher_Removed;
         }
 
         public async Task<bool> ConnectWithPin()
@@ -144,6 +157,14 @@ namespace Win10Bluetooth
         public void Dispose()
         {
             bluetoothLEDevice.Dispose();
+            bluetoothLEDevice = null;
+            watcher.Stop();
+            watcher.Added -= Watcher_Added;
+            watcher.Removed -= Watcher_Removed;
+            watcher = null;
+            characteristics.Clear();
+            GC.Collect();
+
         }
 
         public GattCharacteristic GetCharacteristic(string uuid)
@@ -158,16 +179,7 @@ namespace Win10Bluetooth
 
         public async void StartReceivingData()
         {
-            BluetoothLEDevice leDevice = await BluetoothLEDevice.FromIdAsync(bluetoothLEDevice.DeviceId);
-            bluetoothLEDevice = leDevice;
-
-            string selector = "(System.DeviceInterface.Bluetooth.DeviceAddress:=\"" +
-                leDevice.BluetoothAddress.ToString("X") + "\")";
-
-
-            DeviceWatcher watcher = DeviceInformation.CreateWatcher(selector);
-            watcher.Added += Watcher_Added;
-            watcher.Removed += Watcher_Removed;
+            
             watcher.Start();
         }
         private void Watcher_Removed(DeviceWatcher sender,

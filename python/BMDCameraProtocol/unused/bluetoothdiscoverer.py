@@ -16,19 +16,21 @@ class BluetoothDiscoverer:
         self.ble_devices = []
         self.callbackPIN = callbackPIN
 
+        self.watcher = BluetoothLEAdvertisementWatcher()
+        self.watcher.scanning_mode = BluetoothLEScanningMode.ACTIVE
+        self.watcher.add_received(self._on_advertisement_received)
+
     async def scan_devices(self, seconds):
         self.ble_devices = []
+        self.deviceAddresses = []
 
-        watcher = BluetoothLEAdvertisementWatcher()
-        watcher.scanning_mode = BluetoothLEScanningMode.ACTIVE
-        watcher.add_received(self._on_advertisement_received)
-
-        watcher.start()
+        self.watcher.start()
         await asyncio.sleep(seconds)
-        watcher.stop()
+        self.watcher.stop()
 
     def _on_advertisement_received(self, btAdvWatcher, btAdvEvent):
         address = btAdvEvent.bluetooth_address
+        print(address)
 
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
