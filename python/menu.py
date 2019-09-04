@@ -16,7 +16,10 @@ class Menu:
             print("1. Scan for 3 seconds")
             print("2. Connect to a device")
             print("0. Exit")
-            selection = int(input("Selection : "))
+            try:
+                selection = int(input("Selection : "))
+            except:
+                selection = -1
 
             if selection == 1:
                 devices = self.scan_devices()
@@ -24,7 +27,7 @@ class Menu:
             elif selection == 2:
                 devices = self.scan_devices()
                 if len(devices) == 0:
-                    return
+                    continue
                 selected_device = self.select_camera(devices)
                 paired = await self.connect_to_camera(selected_device)
                 if not paired:
@@ -42,25 +45,29 @@ class Menu:
             print("1. Set timecode")
             print("2. Set focus")
             print("3. Start record")
-            print("4. Disconnect")
-            print("5. Unpair")
+            print("4. Stop record")
+            print("5. Disconnect")
+            print("6. Unpair")
             print("0. Back to main menu")
 
-            choice = int(input("Selection : "))
+            try:
+                choice = int(input("Selection : "))
+            except:
+                choice = -1
             if choice == 1:
-                timecode_string = input("HH,MM,SS,FF : ")
-                timecode = timecode_string.split(",")
-                time_array = [int(x) for x in timecode]
-                await selected_camera.set_timecode(time_array[0], time_array[1], time_array[2], time_array[3])
+                timecode_string = input("HH:MM:SS:FF : ")
+                await selected_camera.set_timecode(timecode_string)
             elif choice == 2:
                 focus = int(input("Focus (min: 0, max: 8) : "))
                 await selected_camera.set_focus(focus)
             elif choice == 3:
                 await selected_camera.start_record()
             elif choice == 4:
+                await selected_camera.stop_record()
+            elif choice == 5:
                 selected_camera.dispose()
                 playing = False
-            elif choice == 5:
+            elif choice == 6:
                 await selected_camera.unpair()
                 selected_camera.dispose()
                 playing = False

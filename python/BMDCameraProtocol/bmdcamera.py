@@ -51,16 +51,55 @@ class BMDCamera:
         result = self.bluetooth_adapter.WriteToCharacteristic(BMDCameraCharacteristics.OUTGOING_CAMERA, message).Result
         return result
         
-    async def set_timecode(self, HH,  MM, SS, FF):
-        HH -= 1
-        MM -= 4
-        nbHour = MM / 60
-        HH += nbHour
-        HH = self.Mod(HH, 24)
-        MM = self.Mod(MM, 60)
+    async def stop_record(self):
+        message = [255, 8, 0, 0, 10, 1, 1, 0, 0, 1, 1, 1]
+        result = self.bluetooth_adapter.WriteToCharacteristic(BMDCameraCharacteristics.OUTGOING_CAMERA, message).Result
+        return result
+
+    async def set_timecode(self, timecode_string):
+        SECOND = 24
+        MINUTE = 60 * SECOND
+        HOUR = 60 * MINUTE
+        DAY = 24 * HOUR
+
+        timecode_split = timecode_string.split(":")
+
+        HH = int(timecode_split[0])
+        MM = int(timecode_split[1])
+        SS = int(timecode_split[2])
+        FF = int(timecode_split[3])
+
+        total_frames = HH * HOUR + MM * MINUTE + SS * SECOND + FF
+        offset_frames = 1 * HOUR + 4 * MINUTE
+
+        diff_frames = BMDCamera.Mod(total_frames - offset_frames, DAY)
+
+
+        HH = diff_frames // HOUR
+        diff_frames -= HH * HOUR
+        MM = diff_frames // MINUTE
+        diff_frames -= MM * MINUTE
+        SS = diff_frames // SECOND
+        diff_frames -= SS * SECOND
+        FF = diff_frames
+
+        HH = BMDCamera.decimal_to_bcd(HH)
+        MM = BMDCamera.decimal_to_bcd(MM)
+        SS = BMDCamera.decimal_to_bcd(SS)
+        FF = BMDCamera.decimal_to_bcd(FF)
+
+        print("{}:{}:{}:{}".format(HH, MM, SS, FF))
 
         message = [ 255, 12, 0, 0, 7, 0, 3, 0, FF, SS, MM, HH, 0, 0, 0, 0 ]
         result = self.bluetooth_adapter.WriteToCharacteristic(BMDCameraCharacteristics.OUTGOING_CAMERA, message).Result
+        return result
+
+    async def set_time_offset(self, minutes):  
+        
+        ba = (minutes).to_bytes(4, byteorder="little", signed=True)
+        message = [ 255, 8, 0, 0, 7, 2, 3, 0, ba[0], ba[1], ba[2], ba[3] ]
+        result = self.bluetooth_adapter.WriteToCharacteristic(BMDCameraCharacteristics.OUTGOING_CAMERA, message).Result
+        print("offset : {}".format(result))
         return result
     
     async def set_focus(self, focus):
@@ -72,8 +111,14 @@ class BMDCamera:
         message = [255, 6, 0, 0, 0, 0, 128, 0, 0, focus]
         result = self.bluetooth_adapter.WriteToCharacteristic(BMDCameraCharacteristics.OUTGOING_CAMERA, message)
         return result
-         
-    def Mod(self, x, m):
+        
+    @staticmethod
+    def decimal_to_bcd(decimal):
+        hexadecimal = (decimal // 10) * 16 + decimal % 10
+        return hexadecimal
+
+    @staticmethod
+    def Mod(x, m):
         r = x % m
 
         if r < 0:
