@@ -64,12 +64,12 @@ class Menu:
         playing = True
         while(playing):
             print("\nCamera -----")
-            print("1. Set timecode")
+            print("1. Set pc timecode")
             print("2. Set focus")
             print("3. Start record")
             print("4. Stop record")
-            print("5. Disconnect")
-            print("6. Unpair")
+            print("5. Unpair")
+            print("0. Disconnect")
             
             task_list = []
             try:
@@ -77,10 +77,10 @@ class Menu:
             except:
                 choice = -1
             if choice == 1:
-                timecode_string = input("HH:MM:SS:FF : ")
+                #timecode_string = input("HH:MM:SS:FF : ")
 
                 for camera in selected_cameras:
-                    task_list.append(asyncio.create_task(camera.set_timecode(timecode_string)))
+                    task_list.append(asyncio.create_task(camera.set_timecode()))
                 
             elif choice == 2:
                 focus = int(input("Focus (min: 0, max: 8) : "))
@@ -94,15 +94,15 @@ class Menu:
                     task_list.append(asyncio.create_task(camera.stop_record()))
             elif choice == 5:
                 for camera in selected_cameras:
-                    camera.dispose()
-                    camera = None
-                playing = False
-            elif choice == 6:
-                for camera in selected_cameras:
                     task_list.append(asyncio.create_task(camera.unpair()))
                 for task_element in task_list:
                     await task_element
                 task_list = []
+                for camera in selected_cameras:
+                    camera.dispose()
+                    camera = None
+                playing = False
+            elif choice == 0:
                 for camera in selected_cameras:
                     camera.dispose()
                     camera = None

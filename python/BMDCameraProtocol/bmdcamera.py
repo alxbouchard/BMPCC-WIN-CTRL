@@ -1,11 +1,12 @@
 import clr
 import sys, os
+import time
 from .bmdcameracharacteristics import BMDCameraCharacteristics
 debug_path = os.path.join(sys.path[0], "..", "Win10Bluetooth", "Win10Bluetooth", "bin", "Debug")
 path = os.path.join(sys.path[0], "lib")
 sys.path.append(debug_path)
 clr.AddReference("Win10Bluetooth") #add .dll file
-import numpy
+#import numpy
 
 from Win10Bluetooth import BluetoothAdapter
 
@@ -16,7 +17,7 @@ class BMDCamera:
 
     @property
     def paired(self):
-        return self.bluetooth_adapter.IsPaired()
+        return self.bluetooth_adapter.IsPaired().Result
 
     async def connect(self, callback_input_pin):
         if not self.bluetooth_adapter.IsPaired().Result:
@@ -60,12 +61,13 @@ class BMDCamera:
         result = self.bluetooth_adapter.WriteToCharacteristic(BMDCameraCharacteristics.OUTGOING_CAMERA, message).Result
         return result
 
-    async def set_timecode(self, timecode_string):
+    async def set_timecode(self):
         SECOND = 24
         MINUTE = 60 * SECOND
         HOUR = 60 * MINUTE
         DAY = 24 * HOUR
 
+        """
         timecode_split = timecode_string.split(":")
 
         HH = int(timecode_split[0])
@@ -73,7 +75,16 @@ class BMDCamera:
         SS = int(timecode_split[2])
         FF = int(timecode_split[3])
 
-        total_frames = HH * HOUR + MM * MINUTE + SS * SECOND + FF
+        total_frames = HH * HOUR + MM * MINUTE + SS * SECOND + FF"""
+
+
+        seconds_utc = time.time()
+        seconds_timezone = time.localtime().tm_gmtoff
+        seconds_local = seconds_utc + seconds_timezone
+        seconds_local = seconds_local % (DAY / SECOND)
+        
+        total_frames = int(round(seconds_local * 24))
+        print(total_frames)
         offset_frames = 1 * HOUR + 4 * MINUTE
 
         diff_frames = BMDCamera.Mod(total_frames - offset_frames, DAY)
@@ -87,12 +98,12 @@ class BMDCamera:
         diff_frames -= SS * SECOND
         FF = diff_frames
 
+        print("{}:{}:{}:{}".format(HH, MM, SS, FF))
+
         HH = BMDCamera.decimal_to_bcd(HH)
         MM = BMDCamera.decimal_to_bcd(MM)
         SS = BMDCamera.decimal_to_bcd(SS)
         FF = BMDCamera.decimal_to_bcd(FF)
-
-        print("{}:{}:{}:{}".format(HH, MM, SS, FF))
 
         message = [ 255, 12, 0, 0, 7, 0, 3, 0, FF, SS, MM, HH, 0, 0, 0, 0 ]
         result = self.bluetooth_adapter.WriteToCharacteristic(BMDCameraCharacteristics.OUTGOING_CAMERA, message).Result

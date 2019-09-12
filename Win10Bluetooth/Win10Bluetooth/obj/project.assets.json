@@ -824,27 +824,25 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\nevek\\.nuget\\packages\\": {}
+    "C:\\Users\\Keven\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Projects\\Pigiste\\Zap\\ccmt-python\\Win10Bluetooth\\Win10Bluetooth\\Win10Bluetooth.csproj",
+      "projectUniqueName": "C:\\Users\\Keven\\Documents\\Projects\\Zap\\ccmt-python\\Win10Bluetooth\\Win10Bluetooth\\Win10Bluetooth.csproj",
       "projectName": "Win10Bluetooth",
-      "projectPath": "D:\\Projects\\Pigiste\\Zap\\ccmt-python\\Win10Bluetooth\\Win10Bluetooth\\Win10Bluetooth.csproj",
-      "packagesPath": "C:\\Users\\nevek\\.nuget\\packages\\",
-      "outputPath": "D:\\Projects\\Pigiste\\Zap\\ccmt-python\\Win10Bluetooth\\Win10Bluetooth\\obj\\",
+      "projectPath": "C:\\Users\\Keven\\Documents\\Projects\\Zap\\ccmt-python\\Win10Bluetooth\\Win10Bluetooth\\Win10Bluetooth.csproj",
+      "packagesPath": "C:\\Users\\Keven\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Keven\\Documents\\Projects\\Zap\\ccmt-python\\Win10Bluetooth\\Win10Bluetooth\\obj\\",
       "projectStyle": "PackageReference",
       "skipContentFileWrite": true,
       "configFilePaths": [
-        "C:\\Users\\nevek\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Users\\Keven\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net472"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
