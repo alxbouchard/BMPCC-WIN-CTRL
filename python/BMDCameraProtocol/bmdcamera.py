@@ -1,6 +1,7 @@
 import clr
 import sys, os
 import time
+import datetime
 from .bmdcameracharacteristics import BMDCameraCharacteristics
 debug_path = os.path.join(sys.path[0], "..", "Win10Bluetooth", "Win10Bluetooth", "bin", "Debug")
 path = os.path.join(sys.path[0], "lib")
@@ -76,7 +77,13 @@ class BMDCamera:
         FF = int(timecode_split[3])
 
         total_frames = HH * HOUR + MM * MINUTE + SS * SECOND + FF"""
+        
+        date = datetime.datetime.now()
 
+        yearH = BMDCamera.decimal_to_bcd(date.year // 100)
+        yearL = BMDCamera.decimal_to_bcd(date.year % 100)
+        month = BMDCamera.decimal_to_bcd(date.month)
+        day = BMDCamera.decimal_to_bcd(date.day)
 
         seconds_utc = time.time()
         seconds_timezone = time.localtime().tm_gmtoff
@@ -87,7 +94,7 @@ class BMDCamera:
         print(total_frames)
         offset_frames = 1 * HOUR + 4 * MINUTE
 
-        diff_frames = BMDCamera.Mod(total_frames - offset_frames, DAY)
+        diff_frames = BMDCamera.Mod(total_frames, DAY)
 
 
         HH = diff_frames // HOUR
@@ -105,7 +112,7 @@ class BMDCamera:
         SS = BMDCamera.decimal_to_bcd(SS)
         FF = BMDCamera.decimal_to_bcd(FF)
 
-        message = [ 255, 12, 0, 0, 7, 0, 3, 0, FF, SS, MM, HH, 0, 0, 0, 0 ]
+        message = [ 255, 12, 0, 0, 7, 0, 3, 0, FF, SS, MM, HH, day, month, yearL, yearH ]
         result = self.bluetooth_adapter.WriteToCharacteristic(BMDCameraCharacteristics.OUTGOING_CAMERA, message).Result
         return result
 
